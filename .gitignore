@@ -1,2 +1,3 @@
 data/airflow/*
-data/notebooks/
+data/notebooks
+.*
