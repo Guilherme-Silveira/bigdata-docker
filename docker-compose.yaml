@@ -111,6 +111,7 @@ services:
     volumes:
       - ./data/trino/hive.properties:/etc/trino/catalog/hive.properties
       - ./data/trino/delta.properties:/etc/trino/catalog/delta.properties
+      - ./data/trino/iceberg.properties:/etc/trino/catalog/iceberg.properties
     networks:
       - bigdata
     depends_on:
