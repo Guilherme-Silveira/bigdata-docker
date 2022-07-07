@@ -65,10 +65,12 @@ services:
   create-metastore-schema:
     image: guisilveira/hive-metastore 
     container_name: create-metastore-schema
+    depends_on:
+      - metastore-db
     networks:
       - bigdata
     command: /opt/hive-metastore/bin/schematool --verbose -initSchema -dbType mysql -userName root -passWord mypass -url jdbc:mysql://metastore-db:3306/metastore_db?createDatabaseIfNotExist=true
-    #restart: "no"
+    restart: "on-failure"
   metastore:
     image: guisilveira/hive-metastore
     container_name: metastore
@@ -83,10 +85,15 @@ services:
     command: /opt/hive-metastore/bin/start-metastore -p 9083
     depends_on:
       - create-metastore-schema
+      - metastore-db
     restart: always
   jupyter:
     image: guisilveira/jupyter
     container_name: jupyter
+    environment:
+      - AWS_ACCESS_KEY_ID=silveira
+      - AWS_SECRET_ACCESS_KEY=guilherme@123
+      - AWS_REGION=us-east-1
     networks:
       - bigdata
     volumes:
