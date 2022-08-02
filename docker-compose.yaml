@@ -28,8 +28,8 @@ x-airflow-common:
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
   volumes:
     - ./data/airflow/dags:/opt/airflow/dags
-    - ./data/airflow/logs:/opt/airflow/logs
-    - ./data/airflow/plugins:/opt/airflow/plugins
+    - airflow-logs:/opt/airflow/logs
+    - airflow-plugins:/opt/airflow/plugins
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -321,7 +321,7 @@ services:
       - bigdata
     user: "0:0"
     volumes:
-      - ./data/airflow/sources:/sources
+      - airflow-sources:/sources
   airflow-cli:
     <<: *airflow-common
     profiles:
