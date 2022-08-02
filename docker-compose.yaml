@@ -97,7 +97,7 @@ services:
     networks:
       - bigdata
     volumes:
-      - ./data/notebooks:/home/jovyan/notebooks
+      - ./data/notebooks:/home/jovyan/work
     ports:
       - 8888:8888
       - 4040:4040
