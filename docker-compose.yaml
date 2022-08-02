@@ -405,6 +405,9 @@ volumes:
   zk-data:
   zk-logs:
   kafka-data:
+  airflow-logs:
+  airflow-sources:
+  airflow-plugins:
 
 networks:
   bigdata:
