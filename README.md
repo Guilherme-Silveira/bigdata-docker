@@ -15,5 +15,4 @@ Jupyter: http://localhost:8888
 Trino: http://localhost:8080
 Airflow: http://localhost:8081
 Superset: http://localhost:8088
-Kafka: http://localhost:9092
 ```
