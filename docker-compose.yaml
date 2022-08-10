@@ -89,6 +89,7 @@ services:
     restart: always
   jupyter:
     image: guisilveira/jupyter
+    user: "${UID}"
     container_name: jupyter
     environment:
       - AWS_ACCESS_KEY_ID=silveira
@@ -97,7 +98,7 @@ services:
     networks:
       - bigdata
     volumes:
-      - ./data/notebooks:/home/jovyan/work
+      - ./data/notebooks:/home/jovyan
     ports:
       - 8888:8888
       - 4040:4040
