@@ -1,5 +1,10 @@
 # bigdata-docker
 
+Arquitetura do projeto:
+![architecture](https://user-images.githubusercontent.com/40548889/192408947-f7a5dd5f-15ea-4f84-9a26-b9cade482c26.png)
+
+---
+
 Para instalar o ambiente big data execute o seguinte comando:
 
 ```
