@@ -25,7 +25,7 @@ x-airflow-common:
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'true'
     AIRFLOW__API__AUTH_BACKEND: 'airflow.api.auth.backend.basic_auth'
-    AIRFLOW__WEBSERVER__NAVBAR_COLOR: '##297ea6'
+    AIRFLOW__WEBSERVER__NAVBAR_COLOR: '#297ea6'
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
   volumes:
     - ./data/airflow/dags:/opt/airflow/dags
