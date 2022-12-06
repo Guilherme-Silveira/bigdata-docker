@@ -1,6 +1,6 @@
 version: '3'
 
-x-superset-image: &superset-image apache/superset:${TAG:-1.5.1}
+x-superset-image: &superset-image apache/superset:${TAG:-latest}
 x-superset-depends-on: &superset-depends-on
   - db
   - redis
