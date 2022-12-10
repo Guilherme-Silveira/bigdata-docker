@@ -19,5 +19,6 @@ Minio Console: http://localhost:9001
 Jupyter: http://localhost:8888
 Trino: http://localhost:8080
 Airflow: http://localhost:8081
+Airbyte: http://localhost:8001
 Superset: http://localhost:8088
 ```
