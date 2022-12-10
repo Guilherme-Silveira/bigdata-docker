@@ -1,7 +1,8 @@
 # bigdata-docker
 
 Arquitetura do projeto:
-![architecture](https://user-images.githubusercontent.com/40548889/192408947-f7a5dd5f-15ea-4f84-9a26-b9cade482c26.png)
+![architecture-docker](https://user-images.githubusercontent.com/40548889/206875350-f68746b9-482d-40ea-ae14-5d1d0cd19168.png)
+
 
 ---
 
