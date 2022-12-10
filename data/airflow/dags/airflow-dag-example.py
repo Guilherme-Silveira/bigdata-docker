@@ -28,7 +28,7 @@ with DAG(
         api_version='auto',
         auto_remove=False,
         command="echo hello",
-        docker_url="unix://var/run/docker.sock",
+        docker_url="tcp://docker-proxy:2375",
         network_mode="bridge"
         )
 
