@@ -23,13 +23,13 @@ with DAG(
 
   t1 = DockerOperator(
         task_id='spark-airflow-test',
-        image='guisilveira/spark-base',
+        image='guisilveira/test-application-spark-docker',
         container_name='spark-airflow-test',
         api_version='auto',
-        auto_remove=False,
-        command="echo hello",
+        auto_remove=True,
+        command="/opt/spark/bin/spark-submit /app/test-application.py",
         docker_url="tcp://docker-proxy:2375",
-        network_mode="bridge"
+        network_mode="bigdata-docker_bigdata"
         )
 
   t1
