@@ -15,27 +15,41 @@ Para instalar o ambiente big data execute o seguinte comando:
 docker-compose up -d
 ```
 
-Portas para acessar os serviços:
+Portas e credenciais para acessar os serviços:
 
 ```
 Minio:         http://localhost:9000
-  - Username: silveira
-  - Password: guilherme@123
 Minio Console: http://localhost:9001
+```
   - Username: silveira
   - Password: guilherme@123
-Kafka:         http://localhost:9092
-Jupyter:       http://localhost:8888
+
+```
 Trino:         http://localhost:8080
+```
   - Username: trino
+
+```
 Airflow:       http://localhost:8081
+```
   - Username: airflow
   - Password: airflow
-Airbyte:       http://localhost:8000
+
+```
 Superset:      http://localhost:8088
+```
   - Username: admin
   - Password: admin
+
+Serviços que não precisam de credenciais:
+
 ```
+Kafka:         http://localhost:9092
+Jupyter:       http://localhost:8888
+Airbyte:       http://localhost:8000
+```
+
+
 
 ---
 # Tutoriais
