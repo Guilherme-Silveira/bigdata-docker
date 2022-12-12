@@ -24,7 +24,7 @@ Kafka:         http://localhost:9092
 Jupyter:       http://localhost:8888
 Trino:         http://localhost:8080
 Airflow:       http://localhost:8081
-Airbyte:       http://localhost:8001
+Airbyte:       http://localhost:8000
 Superset:      http://localhost:8088
 ```
 
