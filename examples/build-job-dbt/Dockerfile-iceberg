@@ -1,0 +1,7 @@
+FROM guisilveira/dbt-trino
+
+COPY ./jaffle_shop_iceberg/ /usr/app/
+
+COPY ./profiles_iceberg.yml /root/.dbt/profiles.yml
+
+CMD [ "run" ]

@@ -1,0 +1,7 @@
+FROM guisilveira/dbt-trino
+
+COPY ./jaffle_shop_delta/ /usr/app/
+
+COPY ./profiles_delta.yml /root/.dbt/profiles.yml
+
+CMD [ "run" ]

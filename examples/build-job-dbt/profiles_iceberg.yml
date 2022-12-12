@@ -1,0 +1,15 @@
+jaffle_shop:
+  target: dev
+  outputs:
+    dev:
+      type: trino
+      user: trino
+      host: trino
+      port: 8080
+      catalog: iceberg
+      schema: transformed
+      threads: 8
+      http_scheme: http
+      session_properties:
+        query_max_run_time: 4h
+        exchange_compression: True
