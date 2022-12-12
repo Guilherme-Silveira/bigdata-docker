@@ -1,3 +1,4 @@
 data/airflow/*
 data/notebooks/*
-.*
+examples/build-job-dbt/jaffle_shop_delta/.*
+examples/build-job-dbt/jaffle_shop_iceberg/.*
