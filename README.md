@@ -36,6 +36,8 @@ No diretório `examples` desse repo, tem alguns exemplos de como utilizar esse a
 - O arquivo `airflow-dag-example.py` mostra o exemplo de uma Dag criada para executar uma connection no Airbyte e depois executar um Job Spark/DBT. Como:
   - Nessa Dag, está sendo utilizado o DockerOperator, que permite que o Airflow crie um container Docker de acordo com as configurações passadas. Para que o Docker Operator funcione corretamente, é preciso que o container que executa o Airflow consiga acessar o `docker.sock`. Para isso, foi configurado um container adicional chamado `docker-proxy`, então em todas as Dags que precisem usar o Docker Operator, no parâmetro `docker_url`, sempre será passado por parâmetro o endpoint do container `docker-proxy`.
   - O Docker Operator é muito versátil, então no exemplo desse repo, foi chamado um job Spark e um DBT, simplesmente modificando a imagem passada como argumento no Operator, dando uma flexibilidade incrível para a Stack.
+
+---
 - Criando uma imagem com um Job Spark:
   - Acesse o diretório `examples/build-job-spark`. Dentro dele, crie o arquivo `.py` com seu job Spark. Para contruir a imagem, use como base a imagem `guisilveira/spark-base`. Ela contém todos os Jars necessários para trabalhar com Delta e Iceberg. Exemplo de Dockerfile:
     - ``` Dockerfile
