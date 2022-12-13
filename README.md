@@ -54,6 +54,14 @@ Airbyte:       http://localhost:8000
 ---
 # Tutoriais
 
+O funcionamento do Airbyte é muito simples. Todas as ingestões devem ser feitas na UI (super interativa por sinal), definindo `sources` e `destinations`. Depois de definir ambos, será necessário conectar ambos, para isso é necessário criar uma `connection` (defina o trigger da connection como `manual`, pois quem a executará será o Airflow). Feito o isso o Airbyte vai "coletar" os dados do `source` e enviar para a `destination`.
+
+OBS: Para rodar essa connection no Airflow mais adiante, será necessário o ID da connection. Para isso, na UI, clique na connection criada. O seu ID será mostrado na URL como no exemplo abaixo:
+
+
+No caso desse exemplo, o ID da connection é: `110a8c4a-b973-4c94-aeb8-0c0d5e5573b0`
+
+---
 No diretório `examples` desse repo, tem alguns exemplos de como utilizar esse ambiente e seus componentes:
 - Os arquivos `delta-docker.py` e `iceberg-docker.py` mostram como precisa ser feita a criação da SparkSession de acordo com o formato de Lakehouse que será utilizado (Delta ou Iceberg). Esse ambiente suporta ambas tecnologias, então fique a vontade para escolher a que melhor te atenda.
 - O arquivo `trino.sql` mostra a criação de algumas tabelas utilizando o Trino. O Trino já está configurado para criar tabelas no formato Delta e Iceberg.
