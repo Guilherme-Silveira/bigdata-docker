@@ -545,7 +545,7 @@ services:
       - GITHUB_STORE_BRANCH=${GITHUB_STORE_BRANCH}
       - AUTO_DETECT_SCHEMA=${AUTO_DETECT_SCHEMA}
     ports:
-      - 8001
+      - 8001:8001
     volumes:
       - workspace:${WORKSPACE_ROOT}
       - data:${CONFIG_ROOT}
@@ -558,7 +558,7 @@ services:
     container_name: airbyte-webapp
     restart: unless-stopped
     ports:
-      - 80
+      - 8000:80
     environment:
       - AIRBYTE_ROLE=${AIRBYTE_ROLE:-}
       - AIRBYTE_VERSION=${VERSION}
@@ -621,22 +621,6 @@ services:
       - AIRBYTE_VERSION=${VERSION}
     networks:
       - bigdata
-  airbyte-proxy:
-    image: airbyte/proxy:${VERSION}
-    container_name: airbyte-proxy
-    restart: unless-stopped
-    ports:
-      - 8000:8000
-      - 8001:8001
-      - 8003:8003
-    environment:
-      - BASIC_AUTH_USERNAME=${BASIC_AUTH_USERNAME}
-      - BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD}
-    networks:
-      - bigdata
-    depends_on:
-      - webapp
-      - server
   docker-proxy:
     image: guisilveira/socat
     container_name: docker-proxy
