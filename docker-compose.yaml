@@ -95,12 +95,7 @@ services:
     restart: always
   jupyter:
     image: guisilveira/jupyter
-    user: "${UID}"
     container_name: jupyter
-    environment:
-      - AWS_ACCESS_KEY_ID=silveira
-      - AWS_SECRET_ACCESS_KEY=guilherme@123
-      - AWS_REGION=us-east-1
     networks:
       - bigdata
     volumes:
