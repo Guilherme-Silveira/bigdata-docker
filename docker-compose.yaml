@@ -96,7 +96,7 @@ services:
   jupyter:
     image: guisilveira/jupyter
     container_name: jupyter
-    user: root
+    user: ':1000'
     networks:
       - bigdata
     volumes:
