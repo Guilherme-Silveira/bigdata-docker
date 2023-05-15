@@ -1,6 +1,6 @@
-version: '3'
+version: '3.8'
 
-x-superset-image: &superset-image apache/superset:${TAG:-1.5.3}
+x-superset-image: &superset-image guisilveira/superset
 x-superset-depends-on: &superset-depends-on
   - db
   - redis
@@ -46,7 +46,7 @@ x-logging: &default-logging
 
 services:
   minio:
-    image: minio/minio
+    image: guisilveira/minio
     container_name: minio
     networks:
       - bigdata
@@ -60,7 +60,7 @@ services:
       - MINIO_ROOT_USER=silveira
       - MINIO_ROOT_PASSWORD=guilherme@123
   metastore-db:
-    image: mariadb/server
+    image: guisilveira/mariadb
     container_name: metastore-db
     networks:
       - bigdata
@@ -105,7 +105,7 @@ services:
       - 4040:4040
     command: jupyter lab --ip 0.0.0.0 --port 8888 --no-browser --NotebookApp.token='' --NotebookApp.password=''
   trino:
-    image: trinodb/trino
+    image: guisilveira/trino
     container_name: trino
     hostname: trino
     ports:
@@ -119,7 +119,7 @@ services:
     depends_on:
       - metastore
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.0.1
+    image: guisilveira/zookeeper
     container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
@@ -130,7 +130,7 @@ services:
     networks:
       - bigdata
   broker:
-    image: confluentinc/cp-kafka:7.0.1
+    image: guisilveira/kafka
     container_name: broker
     ports:
       - "9092:9092"
@@ -149,7 +149,7 @@ services:
     networks:
       - bigdata
   postgres:
-    image: postgres:13
+    image: guisilveira/postgres:13
     networks:
       - bigdata
     environment:
@@ -164,7 +164,7 @@ services:
       retries: 5
     restart: always
   redis:
-    image: redis:latest
+    image: guisilveira/redis:latest
     volumes:
       - redis:/data
     networks:
@@ -340,7 +340,7 @@ services:
       - airflow
   db:
     env_file: docker/.env-non-dev
-    image: postgres:10
+    image: guisilveira/postgres:10
     container_name: superset_db
     restart: unless-stopped
     volumes:
@@ -398,7 +398,7 @@ services:
 
 #------------------------------------- Airbyte ---------------------------------
   init:
-    image: airbyte/init:${VERSION}
+    image: guisilveira/airbyte-init
     logging: *default-logging
     container_name: init
     command: /bin/sh -c "./scripts/create_mount_directories.sh /local_parent ${HACK_LOCAL_ROOT_PARENT} ${LOCAL_ROOT}"
@@ -407,24 +407,26 @@ services:
       - HACK_LOCAL_ROOT_PARENT=${HACK_LOCAL_ROOT_PARENT}
     volumes:
       - ${HACK_LOCAL_ROOT_PARENT}:/local_parent
+    networks:
+      - bigdata
   bootloader:
-    image: airbyte/bootloader:${VERSION}
+    image: guisilveira/airbyte-bootloader
     logging: *default-logging
     container_name: airbyte-bootloader
     environment:
       - AIRBYTE_VERSION=${VERSION}
-      - CONFIG_DATABASE_PASSWORD=${CONFIG_DATABASE_PASSWORD:-}
-      - CONFIG_DATABASE_URL=${CONFIG_DATABASE_URL:-}
-      - CONFIG_DATABASE_USER=${CONFIG_DATABASE_USER:-}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
       - DATABASE_URL=${DATABASE_URL}
       - DATABASE_USER=${DATABASE_USER}
       - LOG_LEVEL=${LOG_LEVEL}
-      - RUN_DATABASE_MIGRATION_ON_STARTUP=${RUN_DATABASE_MIGRATION_ON_STARTUP}
+      - LOCAL_CONNECTOR_CATALOG_PATH=${LOCAL_CONNECTOR_CATALOG_PATH}
     networks:
       - bigdata
+    depends_on:
+      init:
+        condition: service_completed_successfully
   airbyte-db:
-    image: airbyte/db:${VERSION}
+    image: guisilveira/airbyte-db
     logging: *default-logging
     container_name: airbyte-db
     restart: unless-stopped
@@ -442,7 +444,7 @@ services:
     networks:
       - bigdata
   worker:
-    image: airbyte/worker:${VERSION}
+    image: guisilveira/airbyte-worker
     logging: *default-logging
     container_name: airbyte-worker
     restart: unless-stopped
@@ -473,7 +475,7 @@ services:
       - MAX_SPEC_WORKERS=${MAX_SPEC_WORKERS}
       - MAX_SYNC_WORKERS=${MAX_SYNC_WORKERS}
       - MAX_NOTIFY_WORKERS=${MAX_NOTIFY_WORKERS}
-      - SHOULD_RUN_NOTIFY_WORKFLOW=${SHOULD_RUN_NOTIFY_WORKFLOW}
+      - SHOULD_RUN_NOTIFY_WORKFLOWS=${SHOULD_RUN_NOTIFY_WORKFLOWS}
       - NORMALIZATION_JOB_MAIN_CONTAINER_MEMORY_LIMIT=${NORMALIZATION_JOB_MAIN_CONTAINER_MEMORY_LIMIT}
       - NORMALIZATION_JOB_MAIN_CONTAINER_MEMORY_REQUEST=${NORMALIZATION_JOB_MAIN_CONTAINER_MEMORY_REQUEST}
       - NORMALIZATION_JOB_MAIN_CONTAINER_CPU_LIMIT=${NORMALIZATION_JOB_MAIN_CONTAINER_CPU_LIMIT}
@@ -499,16 +501,21 @@ services:
       - MICRONAUT_ENVIRONMENTS=${WORKERS_MICRONAUT_ENVIRONMENTS}
       - APPLY_FIELD_SELECTION=${APPLY_FIELD_SELECTION}
       - FIELD_SELECTION_WORKSPACES=${FIELD_SELECTION_WORKSPACES}
+    configs:
+      - flags
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - workspace:${WORKSPACE_ROOT}
       - ${LOCAL_ROOT}:${LOCAL_ROOT}
     ports:
-      - 9000
+      - "9000"
     networks:
       - bigdata
+    depends_on:
+      bootloader:
+        condition: service_completed_successfully
   server:
-    image: airbyte/server:${VERSION}
+    image: guisilveira/airbyte-server
     logging: *default-logging
     container_name: airbyte-server
     restart: unless-stopped
@@ -541,35 +548,39 @@ services:
       - GITHUB_STORE_BRANCH=${GITHUB_STORE_BRANCH}
       - MICRONAUT_ENVIRONMENTS=${WORKERS_MICRONAUT_ENVIRONMENTS}
       - AUTO_DETECT_SCHEMA=${AUTO_DETECT_SCHEMA}
+      - MAX_NOTIFY_WORKERS=5
+      - SHOULD_RUN_NOTIFY_WORKFLOWS=${SHOULD_RUN_NOTIFY_WORKFLOWS}
     ports:
-      - 8001:8001
+      - "8001:8001"
+    configs:
+      - flags
     volumes:
       - workspace:${WORKSPACE_ROOT}
       - data:${CONFIG_ROOT}
       - ${LOCAL_ROOT}:${LOCAL_ROOT}
     networks:
       - bigdata
+    depends_on:
+      bootloader:
+        condition: service_completed_successfully
   webapp:
-    image: airbyte/webapp:${VERSION}
+    image: guisilveira/airbyte-webapp
     logging: *default-logging
     container_name: airbyte-webapp
     restart: unless-stopped
     ports:
-      - 8000:80
+      - "8000:80"
     environment:
-      - AIRBYTE_ROLE=${AIRBYTE_ROLE:-}
-      - AIRBYTE_VERSION=${VERSION}
-      - API_URL=${API_URL:-}
-      - CONNECTOR_BUILDER_API_URL=${CONNECTOR_BUILDER_API_URL:-}
       - INTERNAL_API_HOST=${INTERNAL_API_HOST}
       - CONNECTOR_BUILDER_API_HOST=${CONNECTOR_BUILDER_API_HOST}
-      - OPENREPLAY=${OPENREPLAY:-}
-      - PAPERCUPS_STORYTIME=${PAPERCUPS_STORYTIME:-}
       - TRACKING_STRATEGY=${TRACKING_STRATEGY}
     networks:
       - bigdata
+    depends_on:
+      bootloader:
+        condition: service_completed_successfully
   airbyte-temporal:
-    image: airbyte/temporal:${VERSION}
+    image: guisilveira/airbyte-temporal
     logging: *default-logging
     container_name: airbyte-temporal
     restart: unless-stopped
@@ -586,7 +597,7 @@ services:
     networks:
       - bigdata
   airbyte-cron:
-    image: airbyte/cron:${VERSION}
+    image: guisilveira/airbyte-cron
     logging: *default-logging
     container_name: airbyte-cron
     restart: unless-stopped
@@ -603,12 +614,17 @@ services:
       - UPDATE_DEFINITIONS_CRON_ENABLED=${UPDATE_DEFINITIONS_CRON_ENABLED}
       - WORKSPACE_ROOT=${WORKSPACE_ROOT}
       - MICRONAUT_ENVIRONMENTS=${CRON_MICRONAUT_ENVIRONMENTS}
+    configs:
+      - flags
     volumes:
       - workspace:${WORKSPACE_ROOT}
     networks:
       - bigdata
+    depends_on:
+      bootloader:
+        condition: service_completed_successfully
   airbyte-connector-builder-server:
-    image: airbyte/connector-builder-server:${VERSION}
+    image: guisilveira/airbyte-connector-atelier-server
     logging: *default-logging
     container_name: airbyte-connector-builder-server
     restart: unless-stopped
@@ -616,8 +632,13 @@ services:
       - 80
     environment:
       - AIRBYTE_VERSION=${VERSION}
+      - CDK_VERSION=${CDK_VERSION}
+      - PYTHON_VERSION=${PYTHON_VERSION}
     networks:
       - bigdata
+    depends_on:
+      bootloader:
+        condition: service_completed_successfully
   docker-proxy:
     image: guisilveira/socat
     container_name: docker-proxy
@@ -649,7 +670,9 @@ volumes:
     name: ${DATA_DOCKER_MOUNT}
   airbyte-db:
     name: ${DB_DOCKER_MOUNT}
-
+configs:
+  flags:
+    file: ./flags.yml
 networks:
   bigdata:
     driver: bridge
