@@ -96,6 +96,7 @@ services:
   jupyter:
     image: guisilveira/jupyter
     container_name: jupyter
+    user: root
     networks:
       - bigdata
     volumes:
@@ -103,7 +104,7 @@ services:
     ports:
       - 8888:8888
       - 4040:4040
-    command: jupyter lab --ip 0.0.0.0 --port 8888 --no-browser --NotebookApp.token='' --NotebookApp.password=''
+    command: jupyter lab --ip 0.0.0.0 --port 8888 --no-browser --NotebookApp.token='' --NotebookApp.password='' --allow-root
   trino:
     image: guisilveira/trino
     container_name: trino
