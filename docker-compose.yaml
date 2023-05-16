@@ -96,11 +96,11 @@ services:
   jupyter:
     image: guisilveira/jupyter
     container_name: jupyter
-    user: ':1000'
+    user: root
     networks:
       - bigdata
     volumes:
-      - ./data/notebooks:/home/jovyan:rw
+      - notebooks:/home/jovyan:rw
     ports:
       - 8888:8888
       - 4040:4040
@@ -651,6 +651,7 @@ services:
   
 volumes:
   minio:
+  notebooks:
   metastore-db:
   postgres-db-volume:
   superset_home:
